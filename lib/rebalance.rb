@@ -1,3 +1,3 @@
-module Rebalance
-  # Your code goes here...
-end
+require 'rebalance/target'
+require 'rebalance/account'
+require 'rebalance/fund'
