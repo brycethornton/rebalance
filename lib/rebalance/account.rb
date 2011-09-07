@@ -1,21 +1,30 @@
 module Rebalance
   class Account
-    attr_accessor :funds
+    attr_accessor :name, :funds, :rebalanced_funds, :asset_class_hash
 
-    def initialize(&block)
-      self.funds = []
+    def initialize(name, &block)
+      self.name = name
+      self.funds = {}
+      self.rebalanced_funds = {}
+      self.asset_class_hash = {}
 
       instance_eval &block
     end
 
     def fund(symbol, asset_class, shares, cost)
       new_fund = Fund.new(symbol, asset_class, shares, cost)
-      self.funds << new_fund
+      self.funds[new_fund.symbol] = new_fund
+      add_to_asset_class_hash new_fund
+    end
+
+    def add_to_asset_class_hash(fund)
+      self.asset_class_hash[fund.asset_class] ||= []
+      self.asset_class_hash[fund.asset_class] << {fund.symbol => fund.value}
     end
 
     def total_value
       total_value = 0
-      funds.each do |fund|
+      funds.each do |symbol, fund|
         total_value = total_value + fund.value
       end
       total_value
@@ -23,8 +32,8 @@ module Rebalance
 
     def calculate_percentages
       percentages = {}
-      funds.each do |fund|
-        percentages[fund.symbol] = fund.value / total_value * 100
+      funds.each do |symbol, fund|
+        percentages[fund.symbol] = (fund.value / total_value * 100).round(2)
       end
       percentages
     end

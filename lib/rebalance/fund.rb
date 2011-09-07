@@ -10,7 +10,7 @@ module Rebalance
     end
 
     def value
-      cost * shares
+      (cost * shares).round(2)
     end
   end
 end
