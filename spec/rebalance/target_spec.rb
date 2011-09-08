@@ -56,11 +56,11 @@ describe Rebalance::Target do
       @target.rebalance(@account)
 
       expected_rebalance = {
-        'ABCDE' => 30,
-        'FGHIJ' => 20,
-        'KLMNO' => 10,
-        'PQRST' => 5,
-        'UVWXY' => 30
+        'ABCDE' => 548.23,
+        'FGHIJ' => 219.29,
+        'KLMNO' => 24.37,
+        'PQRST' => 285.54,
+        'UVWXY' => 1661.30
       }
 
       @target.rebalanced_shares.must_equal expected_rebalance

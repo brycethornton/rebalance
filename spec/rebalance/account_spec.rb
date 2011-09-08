@@ -30,12 +30,8 @@ describe Rebalance::Account do
     percentages['ABCDE'].must_equal 12.05
   end
 
-  it "keeps an asset class hash" do
-    expected_hash = {
-      'Bonds' => [{'ABCDE' => 2000.00}],
-      'Domestic Stocks' => [{'FGHIJ' => 12595.00}, {'KLMNO' => 2000.00}]
-    }
-
-    @account.asset_class_hash.must_equal expected_hash
+  it "finds funds by asset class" do
+    @account.find_by_asset_class('Domestic Stocks')[0].symbol.must_equal 'FGHIJ'
+    @account.find_by_asset_class('Domestic Stocks')[1].symbol.must_equal 'KLMNO'
   end
 end

@@ -1,10 +1,11 @@
 module Rebalance
   class Target
-    attr_accessor :asset_classes, :rebalanced_shares
+    attr_accessor :asset_classes, :rebalanced_shares, :instructions
 
     def initialize(&block)
       self.asset_classes = {}
       self.rebalanced_shares = {}
+      self.instructions = []
 
       instance_eval &block
     end
@@ -31,14 +32,9 @@ module Rebalance
 
     def calculate_current_asset_class_values(account)
       current_values = {}
-      account.asset_class_hash.each do |asset_class, fund_hash|
-        asset_class_value = 0
-        fund_hash.each do |fund_array|
-          fund_array.each do |symbol, value|
-            asset_class_value += value
-          end
-        end
-        current_values[asset_class] = asset_class_value.round(2)
+      account.funds.each do |symbol, fund|
+        current_values[fund.asset_class] = 0 if current_values[fund.asset_class].nil?
+        current_values[fund.asset_class] += fund.value
       end
       current_values
     end
@@ -48,9 +44,20 @@ module Rebalance
       current_asset_class_values  = calculate_current_asset_class_values(account)
 
       target_asset_class_values.each do |asset_class, target_value|
-        if target_value < current_asset_class_values[asset_class]
-          overage = (current_asset_class_values[asset_class] - target_value).round(2)
-          puts "We are over-invested in #{asset_class} by #{overage.to_s}"
+        # sell enough of each fund in the class to get us back to our target
+        related_funds = account.find_by_asset_class(asset_class)
+        related_fund_target_value = target_value / related_funds.size
+
+        related_funds.each do |related_fund|
+          amount_difference = (related_fund.value - related_fund_target_value).round(2)
+          if amount_difference > 0
+            verb = "Sell"
+          elsif amount_difference < 0
+            verb = "Buy"
+          end
+          self.instructions << verb + " $#{amount_difference.abs} of #{related_fund.symbol}"
+          new_shares = ((related_fund.value - amount_difference)/related_fund.cost).round(2)
+          self.rebalanced_shares[related_fund.symbol] = new_shares
         end
       end
     end
