@@ -1,11 +1,17 @@
 module Rebalance
   class Target
-    attr_accessor :asset_classes, :rebalanced_shares, :instructions
+    attr_accessor :asset_classes,
+                  :rebalanced_shares,
+                  :rebalanced_values,
+                  :rebalanced_share_difference,
+                  :rebalanced_value_difference
 
     def initialize(&block)
       self.asset_classes = {}
       self.rebalanced_shares = {}
-      self.instructions = []
+      self.rebalanced_values = {}
+      self.rebalanced_share_difference = {}
+      self.rebalanced_value_difference = {}
 
       instance_eval &block
     end
@@ -49,15 +55,18 @@ module Rebalance
         related_fund_target_value = target_value / related_funds.size
 
         related_funds.each do |related_fund|
-          amount_difference = (related_fund.value - related_fund_target_value).round(2)
-          if amount_difference > 0
-            verb = "Sell"
-          elsif amount_difference < 0
-            verb = "Buy"
+          amount_difference = (related_fund.value - related_fund_target_value)
+
+          if amount_difference != 0
+            new_shares = ((related_fund.value - amount_difference)/related_fund.cost)
+            symbol = related_fund.symbol
+            self.rebalanced_shares[symbol] = new_shares.round(4)
+
+            share_difference = (new_shares - related_fund.shares).round(2)
+            self.rebalanced_share_difference[symbol] = share_difference
+            self.rebalanced_values[symbol] = (new_shares * related_fund.cost).round(2)
+            self.rebalanced_value_difference[symbol] = (rebalanced_values[symbol] - related_fund.value).round(2)
           end
-          self.instructions << verb + " $#{amount_difference.abs} of #{related_fund.symbol}"
-          new_shares = ((related_fund.value - amount_difference)/related_fund.cost).round(2)
-          self.rebalanced_shares[related_fund.symbol] = new_shares
         end
       end
     end
