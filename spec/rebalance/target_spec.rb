@@ -201,23 +201,45 @@ describe Rebalance::Target do
       it 'provides the new number of shares for each fund' do
         expected_rebalance = {
           "Wife's Roth" => {
-            'ABCDE' => 548.2275,
-            'FGHIJ' => 219.291,
-            'KLMNO' => 24.3657,
-            'PQRST' => 285.5352,
-            'UVWXY' => 1661.2955
+            'ABCDE' => 525.2515,
+            'FGHIJ' => 210.1006,
+            'KLMNO' => 29.5349,
+            'PQRST' => 268.4844,
+            'UVWXY' => 1562.0911
           },
           "My Roth" => {
-            'AAAAA' => 0,
-            'BBBBB' => 0,
-            'FGHIJ' => 0
+            'AAAAA' => 0.0,
+            'BBBBB' => 62.60850,
+            'FGHIJ' => 57.59980
           },
           "My SEP IRA" => {
-            'ZZZZZ' => 0
+            'ZZZZZ' => 249.9999
           }
         }
 
         @target.rebalanced_shares.must_equal expected_rebalance
+      end
+
+      it 'provides the share difference for each fund' do
+        expected_rebalance = {
+          "Wife's Roth" => {
+            'ABCDE' => 25.25,
+            'FGHIJ' => -89.9,
+            'KLMNO' => -45.47,
+            'PQRST' => 232.98,
+            'UVWXY' => 1487.09
+          },
+          "My Roth" => {
+            'AAAAA' => -150.0,
+            'BBBBB' => 52.61,
+            'FGHIJ' => -42.4
+          },
+          "My SEP IRA" => {
+            'ZZZZZ' => 0.0
+          }
+        }
+
+        @target.rebalanced_share_difference.must_equal expected_rebalance
       end
     end
   end
