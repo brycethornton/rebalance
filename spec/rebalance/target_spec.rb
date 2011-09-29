@@ -51,64 +51,6 @@ describe Rebalance::Target do
 
       current_values.must_equal expected_current_values
     end
-
-    describe 'after a rebalance' do
-      before do
-        @target.rebalance(@account)
-      end
-
-      it 'provides the new number of shares for each fund' do
-        expected_rebalance = {
-          'ABCDE' => 548.2275,
-          'FGHIJ' => 219.291,
-          'KLMNO' => 24.3657,
-          'PQRST' => 285.5352,
-          'UVWXY' => 1661.2955
-        }
-
-        @target.rebalanced_shares.must_equal expected_rebalance
-      end
-
-      it 'provides the difference in shares for each fund' do
-        expected_difference = {
-          'ABCDE' => 48.23,
-          'FGHIJ' => -80.71,
-          'KLMNO' => -50.63,
-          'PQRST' => 250.04,
-          'UVWXY' => 1586.30
-        }
-
-        @target.rebalanced_share_difference.must_equal expected_difference
-      end
-
-      it 'provides the new value for each fund' do
-        expected_rebalance = {
-          'ABCDE' => 5482.28,
-          'FGHIJ' => 5482.28,
-          'KLMNO' => 7309.70,
-          'PQRST' => 9137.13,
-          'UVWXY' => 9137.13
-        }
-
-        @target.rebalanced_values.must_equal expected_rebalance
-      end
-
-      it 'provides the difference in value for each fund' do
-        expected_difference = {
-          'ABCDE' => 482.28,
-          'FGHIJ' => -2017.72,
-          'KLMNO' => -15190.30,
-          'PQRST' => 8001.13,
-          'UVWXY' => 8724.63
-        }
-
-        @target.rebalanced_value_difference.must_equal expected_difference
-
-        total_value = 0
-        @target.rebalanced_value_difference.values.each { |value| total_value += value }
-        total_value.round(2).must_equal 0.02
-      end
-    end
   end
 
   describe 'with multiple accounts' do
@@ -133,7 +75,7 @@ describe Rebalance::Target do
     end
 
     it 'calculates the total value of all accounts' do
-      @target.total_value_of_all_accounts([@wifes_roth, @my_roth, @my_sep_ira]).must_equal 44491.00
+      @target.total_value_of_all_accounts(@wifes_roth, @my_roth, @my_sep_ira).must_equal 44491.00
     end
 
     it 'calculates the target value for each asset class' do
@@ -177,70 +119,20 @@ describe Rebalance::Target do
     it 'calculates the asset class percentages across all accounts' do
       expected_percentages = {
         "Wife's Roth" => {
-          "Some Asset Class" => 28.0956,
-          "Another Asset Class" => 50.5720,
-          "Bonds" => 3.4805
-        },
+        "Some Asset Class" => 28.0956,
+        "Another Asset Class" => 50.5720,
+        "Bonds" => 3.4805
+      },
         "My Roth" => {
-          "Cash" => 0.3371,
-          "Some Asset Class" => 6.1361
-        },
+        "Cash" => 0.3371,
+        "Some Asset Class" => 6.1361
+      },
         "My SEP IRA" => {
-          "Bonds" => 11.3787
-        }
+        "Bonds" => 11.3787
+      }
       }
 
-      @target.asset_class_percentages_across_all_accounts([@wifes_roth, @my_roth, @my_sep_ira]).must_equal expected_percentages
-    end
-
-    describe 'after a rebalance' do
-      before do
-        @target.rebalance(@wifes_roth, @my_roth, @my_sep_ira)
-      end
-
-      it 'provides the new number of shares for each fund' do
-        expected_rebalance = {
-          "Wife's Roth" => {
-            'ABCDE' => 525.2515,
-            'FGHIJ' => 210.1006,
-            'KLMNO' => 29.5349,
-            'PQRST' => 268.4844,
-            'UVWXY' => 1562.0911
-          },
-          "My Roth" => {
-            'AAAAA' => 0.0,
-            'BBBBB' => 62.60850,
-            'FGHIJ' => 57.59980
-          },
-          "My SEP IRA" => {
-            'ZZZZZ' => 249.9999
-          }
-        }
-
-        @target.rebalanced_shares.must_equal expected_rebalance
-      end
-
-      it 'provides the share difference for each fund' do
-        expected_rebalance = {
-          "Wife's Roth" => {
-            'ABCDE' => 25.25,
-            'FGHIJ' => -89.9,
-            'KLMNO' => -45.47,
-            'PQRST' => 232.98,
-            'UVWXY' => 1487.09
-          },
-          "My Roth" => {
-            'AAAAA' => -150.0,
-            'BBBBB' => 52.61,
-            'FGHIJ' => -42.4
-          },
-          "My SEP IRA" => {
-            'ZZZZZ' => 0.0
-          }
-        }
-
-        @target.rebalanced_share_difference.must_equal expected_rebalance
-      end
+      @target.asset_class_percentages_across_all_accounts(@wifes_roth, @my_roth, @my_sep_ira).must_equal expected_percentages
     end
   end
 end

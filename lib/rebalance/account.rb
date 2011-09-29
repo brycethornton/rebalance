@@ -38,14 +38,5 @@ module Rebalance
       end
       asset_class_funds
     end
-
-    def to_s
-      output = ''
-      funds.each do |new_fund|
-        output << "#{new_fund.symbol} - #{new_fund.asset_class} "
-        output << "Shares: #{new_fund.shares} Cost: $#{new_fund.cost}\n"
-      end
-      output
-    end
   end
 end
