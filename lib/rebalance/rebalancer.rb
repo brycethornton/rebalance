@@ -1,13 +1,15 @@
 module Rebalance
   class Rebalancer
-    attr_accessor :rebalanced_shares,
+    attr_accessor :accounts,
+      :target,
+      :rebalanced_shares,
       :rebalanced_values,
       :rebalanced_share_difference,
       :rebalanced_value_difference
 
     def initialize(target, *accounts)
-      @target = target
-      @accounts = accounts
+      self.target = target
+      self.accounts = accounts
 
       initialize_result_values
     end
@@ -36,6 +38,34 @@ module Rebalance
       elsif @accounts.size > 1
         multiple_account_rebalance(@accounts)
       end
+    end
+
+    def calculate_rebalanced_asset_class_values
+      # First, create a hash of symbols and their asset classes
+      symbol_asset_class_hash = {}
+      @accounts.each do |account|
+        account.funds.each do |symbol, fund|
+          symbol_asset_class_hash[symbol] = fund.asset_class
+        end
+      end
+
+      values = {}
+      if @accounts.size > 1
+        rebalanced_values.each do |account, symbol_value_hash|
+          symbol_value_hash.each do |symbol, value|
+            asset_class = symbol_asset_class_hash[symbol]
+            values[asset_class] = 0 if values[asset_class].nil?
+            values[asset_class] += value
+          end
+        end
+      else
+        rebalanced_values.each do |symbol, value|
+          asset_class = symbol_asset_class_hash[symbol]
+          values[asset_class] = 0 if values[asset_class].nil?
+          values[asset_class] += value
+        end
+      end
+      values
     end
 
     private
