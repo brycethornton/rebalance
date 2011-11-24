@@ -8,35 +8,37 @@ module Rebalance
       :rebalanced_value_difference
 
     def initialize(target, *accounts)
-      self.target = target
-      self.accounts = accounts
+      @target = target
+      # make sure we add empty funds where appropriate before we start rebalancing
+      # in order to allow all accounts/funds to balance properly
+      @accounts = accounts
 
       initialize_result_values
     end
 
-    def initialize_result_values(accounts=[])
-      if accounts.size <= 1
-        self.rebalanced_shares = {}
-        self.rebalanced_values = {}
-        self.rebalanced_share_difference = {}
-        self.rebalanced_value_difference = {}
-      elsif accounts.size > 1
-        accounts.each do |account|
-          self.rebalanced_shares[account.name] = {}
-          self.rebalanced_values[account.name] = {}
-          self.rebalanced_share_difference[account.name] = {}
-          self.rebalanced_value_difference[account.name] = {}
+    def initialize_result_values
+      @rebalanced_shares = {}
+      @rebalanced_values = {}
+      @rebalanced_share_difference = {}
+      @rebalanced_value_difference = {}
+
+      if @accounts.size > 1
+        @accounts.each do |account|
+          @rebalanced_shares[account.name] = {}
+          @rebalanced_values[account.name] = {}
+          @rebalanced_share_difference[account.name] = {}
+          @rebalanced_value_difference[account.name] = {}
         end
       end
     end
 
     def rebalance
-      initialize_result_values(@accounts)
+      initialize_result_values
 
       if @accounts.size == 1
-        single_account_rebalance(@accounts.first)
+        single_account_rebalance
       elsif @accounts.size > 1
-        multiple_account_rebalance(@accounts)
+        multiple_account_rebalance
       end
     end
 
@@ -51,7 +53,7 @@ module Rebalance
 
       values = {}
       if @accounts.size > 1
-        rebalanced_values.each do |account, symbol_value_hash|
+        @rebalanced_values.each do |account, symbol_value_hash|
           symbol_value_hash.each do |symbol, value|
             asset_class = symbol_asset_class_hash[symbol]
             values[asset_class] = 0 if values[asset_class].nil?
@@ -59,7 +61,7 @@ module Rebalance
           end
         end
       else
-        rebalanced_values.each do |symbol, value|
+        @rebalanced_values.each do |symbol, value|
           asset_class = symbol_asset_class_hash[symbol]
           values[asset_class] = 0 if values[asset_class].nil?
           values[asset_class] += value
@@ -69,27 +71,42 @@ module Rebalance
     end
 
     private
-    def single_account_rebalance(account)
-      target_asset_class_values   = @target.calculate_target_asset_class_values(account)
+    def single_account_rebalance
+      account = @accounts.first
+      target_asset_class_values = @target.calculate_target_asset_class_values(account)
 
       target_asset_class_values.each do |asset_class, target_value|
         rebalanced_asset_class = rebalance_asset_class_within_account(account, asset_class, target_value)
 
-        self.rebalanced_shares.merge!(rebalanced_asset_class['rebalanced_shares'])
-        self.rebalanced_share_difference.merge!(rebalanced_asset_class['rebalanced_share_difference'])
-        self.rebalanced_values.merge!(rebalanced_asset_class['rebalanced_values'])
-        self.rebalanced_value_difference.merge!(rebalanced_asset_class['rebalanced_value_difference'])
+        @rebalanced_shares.merge!(rebalanced_asset_class['rebalanced_shares'])
+        @rebalanced_share_difference.merge!(rebalanced_asset_class['rebalanced_share_difference'])
+        @rebalanced_values.merge!(rebalanced_asset_class['rebalanced_values'])
+        @rebalanced_value_difference.merge!(rebalanced_asset_class['rebalanced_value_difference'])
       end
     end
 
-    def multiple_account_rebalance(accounts)
-      # First, rebalance account by asset class percentage
-      account_percentages = rebalance_account_percentages(accounts)
+    def multiple_account_rebalance
+      # Rebalance accounts by asset class percentage
+      account_percentages = rebalance_account_percentages
 
-      total_value = @target.total_value_of_all_accounts(*accounts)
+      # Try to rebalance up to 10 times
+      i = 0
+      #p account_percentages
+      #p find_unbalanced_asset_classes(account_percentages)
+      while i < 10 && unbalanced_asset_classes = find_unbalanced_asset_classes(account_percentages)
+        p "i is #{i}"
+        p "unbalanced_asset_classes: "
+        p account_percentages
+        p unbalanced_asset_classes
+        i += 1
+        @accounts = add_empty_funds(unbalanced_asset_classes)
+        account_percentages = rebalance_account_percentages
+      end
+
+      total_value = @target.total_value_of_all_accounts(*@accounts)
 
       # Now, turn those asset class percentages back into balanced funds
-      accounts.each do |account|
+      @accounts.each do |account|
         target_asset_class_percentages = account_percentages[account.name]
 
         # Convert the percentages into values
@@ -102,12 +119,54 @@ module Rebalance
         target_asset_class_values.each do |asset_class, target_value|
           rebalanced_asset_class = rebalance_asset_class_within_account(account, asset_class, target_value)
 
-          self.rebalanced_shares[account.name].merge!(rebalanced_asset_class['rebalanced_shares'])
-          self.rebalanced_share_difference[account.name].merge!(rebalanced_asset_class['rebalanced_share_difference'])
-          self.rebalanced_values[account.name].merge!(rebalanced_asset_class['rebalanced_values'])
-          self.rebalanced_value_difference[account.name].merge!(rebalanced_asset_class['rebalanced_value_difference'])
+          @rebalanced_shares[account.name].merge!(rebalanced_asset_class['rebalanced_shares'])
+          @rebalanced_share_difference[account.name].merge!(rebalanced_asset_class['rebalanced_share_difference'])
+          @rebalanced_values[account.name].merge!(rebalanced_asset_class['rebalanced_values'])
+          @rebalanced_value_difference[account.name].merge!(rebalanced_asset_class['rebalanced_value_difference'])
         end
       end
+    end
+
+    def find_unbalanced_asset_classes(account_percentages)
+      target_percentages = target.calculate_target_asset_class_percentages(*@accounts)
+
+      rebalanced_asset_classes = {}
+
+      account_percentages.each do |account_name, asset_class_hash|
+        asset_class_hash.each do |asset_class, rebalanced_percentage|
+          rebalanced_asset_classes[asset_class] = 0 if rebalanced_asset_classes[asset_class].nil?
+          rebalanced_asset_classes[asset_class] += rebalanced_percentage
+        end
+      end
+
+      #p "rebalanced_asset_classes: "
+      #p rebalanced_asset_classes
+      #p "target_percentages: "
+      #p target_percentages
+
+      unbalanced_asset_classes = []
+
+      rebalanced_asset_classes.each do |asset_class, rebalanced_asset_class_percentage|
+        #p "rebalanced_asset_class_percentage: #{rebalanced_asset_class_percentage}"
+        #p "target_percentages[#{asset_class}]: #{target_percentages[asset_class]}"
+        if !target_percentages[asset_class].nil?
+          #p "abs: #{(rebalanced_asset_class_percentage - target_percentages[asset_class]).abs}"
+          if (rebalanced_asset_class_percentage - target_percentages[asset_class]).abs > 0.5
+            #p "adding #{asset_class} to the list of unbalanced"
+            unbalanced_asset_classes << asset_class
+          end
+        end
+      end
+
+      if !unbalanced_asset_classes.empty?
+        unbalanced_asset_classes
+      else
+        false
+      end
+    end
+
+    def add_empty_funds(unbalanced_asset_classes)
+      @accounts
     end
 
     def rebalance_asset_class_within_account(account, class_name, target_value)
@@ -138,9 +197,9 @@ module Rebalance
       return_values
     end
 
-    def rebalance_account_percentages(accounts)
-      working_account_percentages = @target.asset_class_percentages_across_all_accounts(*accounts)
-      working_asset_class_percentages = @target.calculate_current_asset_class_percentages(*accounts)
+    def rebalance_account_percentages
+      working_account_percentages = @target.asset_class_percentages_across_all_accounts(*@accounts)
+      working_asset_class_percentages = @target.calculate_current_asset_class_percentages(*@accounts)
 
       100.times do |num|
         working_account_percentages.each do |account_name, a_classes|

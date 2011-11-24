@@ -72,6 +72,11 @@ describe Rebalance::Rebalancer do
       @rebalance.rebalanced_value_difference.values.each { |value| total_value += value }
       total_value.round(2).must_equal 0.02
     end
+
+    it 'should be rebalanced' do
+      assert_rebalanced @rebalance
+      assert_accounts_have_same_values_after_rebalance @rebalance
+    end
   end
 
   describe 'with multiple accounts' do
@@ -192,45 +197,74 @@ describe Rebalance::Rebalancer do
       @rebalance.rebalanced_value_difference.must_equal expected_rebalance
     end
 
-    it 'ensures that each account retains the same value' do
-      assert_accounts_have_same_values_after_rebalance @rebalance
-    end
-
     it 'should be rebalanced' do
       assert_rebalanced @rebalance
+      assert_accounts_have_same_values_after_rebalance @rebalance
     end
   end
 
-  describe 'with two asset classes' do
+  #describe 'without enough value in an account with a single asset class to hit the target' do
+  #  before do
+  #    @target = Rebalance::Target.new do
+  #      asset_class 90, 'Some Asset Class'
+  #      asset_class 10, 'Another Asset Class'
+  #    end
+
+  #    @wifes_roth = Rebalance::Account.new "Wife's Roth" do
+  #      fund 'BBBBB', 'Some Asset Class', 10, 23.00  # $230
+  #    end
+
+  #    @my_roth = Rebalance::Account.new 'My Roth' do
+  #      fund 'KLMNO', 'Another Asset Class', 75, 300 # $22,500
+  #    end
+
+  #    @rebalance = Rebalance::Rebalancer.new(@target, @wifes_roth, @my_roth)
+  #    @rebalance.rebalance
+  #  end
+
+  #  it 'should be rebalanced' do
+  #    assert_rebalanced @rebalance
+  #    assert_accounts_have_same_values_after_rebalance @rebalance
+  #  end
+  #end
+
+  describe 'with a lot of asset classes' do
     before do
       @target = Rebalance::Target.new do
-        asset_class 10, 'Some Asset Class'
-        asset_class 90, 'Another Asset Class'
+        asset_class 35, 'US Total Market'
+        asset_class 18, 'Pacific'
+        asset_class 18, 'Europe'
+        asset_class 8,  'Real Estate'
+        asset_class 8,  'Total Bond Market'
+        asset_class 8,  'Inflation-Protected Bonds'
+        asset_class 5,  'US Small Cap Value'
       end
 
       @wifes_roth = Rebalance::Account.new "Wife's Roth" do
-        fund 'ABCDE', 'Some Asset Class', 500, 10.00 # $5,000
-        fund 'FGHIJ', 'Some Asset Class', 300, 25.00 # $7,500
-        fund 'KLMNO', 'Another Asset Class', 75, 300 # $22,500
-        fund 'PQRST', 'Bonds', 35.5, 32.00           # $1,136
+        fund 'VIPSX', 'Inflation-Protected Bonds', 285.71, 14.10
+        fund 'VBMFX', 'Total Bond Market', 934.20, 11.01
       end
 
       @my_roth = Rebalance::Account.new 'My Roth' do
-        fund 'AAAAA', 'Cash', 150, 1.00              # $150
-        fund 'BBBBB', 'Some Asset Class', 10, 23.00  # $230
-        fund 'FGHIJ', 'Some Asset Class', 100, 25.00 # $2,500
+        fund 'VISVX', 'US Small Cap Value', 293.85, 13.52
+        fund 'VGSIX', 'Real Estate', 231.16, 16.61
+        fund 'VTSAX', 'US Total Market', 453.90, 28.42
+        fund 'VPACX', 'Pacific', 33.43, 9.17
+        fund 'VEURX', 'Europe', 135.25, 21.97
       end
 
-      @rebalance = Rebalance::Rebalancer.new(@target, @wifes_roth, @my_roth)
-      @rebalance.rebalance
-    end
+      @my_traditional_ira = Rebalance::Account.new 'My Traditional IRA' do
+        fund 'VTSAX', 'US Total Market', 625.33, 28.42
+        fund 'VMMXX', 'Cash', 14524.44, 1.00
+      end
 
-    it 'ensures that each account retains the same value' do
-      assert_accounts_have_same_values_after_rebalance @rebalance
+      @rebalance = Rebalance::Rebalancer.new(@target, @wifes_roth, @my_roth, @my_traditional_ira)
+      @rebalance.rebalance
     end
 
     it 'should be rebalanced' do
       assert_rebalanced @rebalance
+      assert_accounts_have_same_values_after_rebalance @rebalance
     end
   end
 end

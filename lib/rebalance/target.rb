@@ -21,6 +21,17 @@ module Rebalance
       target_values
     end
 
+    def calculate_target_asset_class_percentages(*accounts)
+      target_percentages = {}
+      target_values = calculate_target_asset_class_values(*accounts)
+      total_value = total_value_of_all_accounts(*accounts)
+
+      target_values.each do |asset_class, asset_class_value|
+        target_percentages[asset_class] = ((asset_class_value / total_value)*100).round(4)
+      end
+      target_percentages
+    end
+
     def calculate_current_asset_class_values(*accounts)
       current_values = {}
       accounts.each do |account|
