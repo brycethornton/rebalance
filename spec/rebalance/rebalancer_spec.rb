@@ -21,6 +21,16 @@ describe Rebalance::Rebalancer do
       @rebalance.rebalance
     end
 
+    it 'creates a hash of funds by asset class' do
+      expected_hash = {
+        'Some Asset Class' => [@account.funds['ABCDE'], @account.funds['FGHIJ']],
+        'Another Asset Class' => [@account.funds['KLMNO']],
+        'Bonds' => [@account.funds['PQRST'], @account.funds['UVWXY']]
+      }
+
+      @rebalance.funds_by_asset_class.must_equal expected_hash
+    end
+
     it 'provides the new number of shares for each fund' do
       expected_rebalance = {
         'ABCDE' => 548.2275,

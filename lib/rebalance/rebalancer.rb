@@ -70,6 +70,17 @@ module Rebalance
       values
     end
 
+    def funds_by_asset_class
+      asset_class_hash = {}
+      @accounts.each do |account|
+        account.funds.each do |symbol, fund|
+          asset_class_hash[fund.asset_class] = [] if asset_class_hash[fund.asset_class].nil?
+          asset_class_hash[fund.asset_class] << fund if !asset_class_hash[fund.asset_class].include?(fund)
+        end
+      end
+      asset_class_hash
+    end
+
     private
     def single_account_rebalance
       account = @accounts.first
@@ -96,7 +107,6 @@ module Rebalance
       while i < 10 && unbalanced_asset_classes = find_unbalanced_asset_classes(account_percentages)
         p "i is #{i}"
         p "unbalanced_asset_classes: "
-        p account_percentages
         p unbalanced_asset_classes
         i += 1
         @accounts = add_empty_funds(unbalanced_asset_classes)
@@ -151,7 +161,7 @@ module Rebalance
         #p "target_percentages[#{asset_class}]: #{target_percentages[asset_class]}"
         if !target_percentages[asset_class].nil?
           #p "abs: #{(rebalanced_asset_class_percentage - target_percentages[asset_class]).abs}"
-          if (rebalanced_asset_class_percentage - target_percentages[asset_class]).abs > 0.5
+          if (rebalanced_asset_class_percentage - target_percentages[asset_class]).abs > 1.0
             #p "adding #{asset_class} to the list of unbalanced"
             unbalanced_asset_classes << asset_class
           end
@@ -166,7 +176,28 @@ module Rebalance
     end
 
     def add_empty_funds(unbalanced_asset_classes)
-      @accounts
+      # Loop through each account and add an empty fund from
+      # a missing asset class to an account that doesn't currently
+      # carry it.
+      temp_accounts = []
+      added_asset_classes = []
+      @accounts.each do |account|
+        p account.name
+        unbalanced_asset_classes.each do |unbalanced_asset_class|
+          # If we can't find this asset class in this account
+          # then add it
+          if account.find_by_asset_class(unbalanced_asset_class).empty? && !added_asset_classes.include?(unbalanced_asset_class)
+            asset_class_funds = funds_by_asset_class
+            fund_to_add = asset_class_funds[unbalanced_asset_class].first
+            p "Adding #{fund_to_add.symbol} to #{unbalanced_asset_class} for #{account.name}"
+            added_asset_classes << unbalanced_asset_class
+            account.fund(fund_to_add.symbol, unbalanced_asset_class, 0, fund_to_add.cost)
+          end
+        end
+        temp_accounts << account
+      end
+
+      temp_accounts
     end
 
     def rebalance_asset_class_within_account(account, class_name, target_value)
