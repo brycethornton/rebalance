@@ -213,30 +213,30 @@ describe Rebalance::Rebalancer do
     end
   end
 
-  #describe 'without enough value in an account with a single asset class to hit the target' do
-  #  before do
-  #    @target = Rebalance::Target.new do
-  #      asset_class 90, 'Some Asset Class'
-  #      asset_class 10, 'Another Asset Class'
-  #    end
+  describe 'without enough value in an account with a single asset class to hit the target' do
+    before do
+      @target = Rebalance::Target.new do
+        asset_class 90, 'Some Asset Class'
+        asset_class 10, 'Another Asset Class'
+      end
 
-  #    @wifes_roth = Rebalance::Account.new "Wife's Roth" do
-  #      fund 'BBBBB', 'Some Asset Class', 10, 23.00  # $230
-  #    end
+      @wifes_roth = Rebalance::Account.new "Wife's Roth" do
+        fund 'BBBBB', 'Some Asset Class', 10, 23.00  # $230
+      end
 
-  #    @my_roth = Rebalance::Account.new 'My Roth' do
-  #      fund 'KLMNO', 'Another Asset Class', 75, 300 # $22,500
-  #    end
+      @my_roth = Rebalance::Account.new 'My Roth' do
+        fund 'KLMNO', 'Another Asset Class', 75, 300 # $22,500
+      end
 
-  #    @rebalance = Rebalance::Rebalancer.new(@target, @wifes_roth, @my_roth)
-  #    @rebalance.rebalance
-  #  end
+      @rebalance = Rebalance::Rebalancer.new(@target, @wifes_roth, @my_roth)
+      @rebalance.rebalance
+    end
 
-  #  it 'should be rebalanced' do
-  #    assert_rebalanced @rebalance
-  #    assert_accounts_have_same_values_after_rebalance @rebalance
-  #  end
-  #end
+    it 'should be rebalanced' do
+      assert_rebalanced @rebalance
+      assert_accounts_have_same_values_after_rebalance @rebalance
+    end
+  end
 
   describe 'with a lot of asset classes' do
     before do

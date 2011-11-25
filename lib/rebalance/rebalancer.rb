@@ -2,6 +2,7 @@ module Rebalance
   class Rebalancer
     attr_accessor :accounts,
       :target,
+      :acceptable_asset_class_delta,
       :rebalanced_shares,
       :rebalanced_values,
       :rebalanced_share_difference,
@@ -12,6 +13,8 @@ module Rebalance
       # make sure we add empty funds where appropriate before we start rebalancing
       # in order to allow all accounts/funds to balance properly
       @accounts = accounts
+
+      @acceptable_asset_class_delta = 1.0
 
       initialize_result_values
     end
@@ -102,12 +105,7 @@ module Rebalance
 
       # Try to rebalance up to 10 times
       i = 0
-      #p account_percentages
-      #p find_unbalanced_asset_classes(account_percentages)
       while i < 10 && unbalanced_asset_classes = find_unbalanced_asset_classes(account_percentages)
-        p "i is #{i}"
-        p "unbalanced_asset_classes: "
-        p unbalanced_asset_classes
         i += 1
         @accounts = add_empty_funds(unbalanced_asset_classes)
         account_percentages = rebalance_account_percentages
@@ -149,20 +147,11 @@ module Rebalance
         end
       end
 
-      #p "rebalanced_asset_classes: "
-      #p rebalanced_asset_classes
-      #p "target_percentages: "
-      #p target_percentages
-
       unbalanced_asset_classes = []
 
       rebalanced_asset_classes.each do |asset_class, rebalanced_asset_class_percentage|
-        #p "rebalanced_asset_class_percentage: #{rebalanced_asset_class_percentage}"
-        #p "target_percentages[#{asset_class}]: #{target_percentages[asset_class]}"
         if !target_percentages[asset_class].nil?
-          #p "abs: #{(rebalanced_asset_class_percentage - target_percentages[asset_class]).abs}"
-          if (rebalanced_asset_class_percentage - target_percentages[asset_class]).abs > 1.0
-            #p "adding #{asset_class} to the list of unbalanced"
+          if (rebalanced_asset_class_percentage - target_percentages[asset_class]).abs > @acceptable_asset_class_delta
             unbalanced_asset_classes << asset_class
           end
         end
@@ -182,14 +171,12 @@ module Rebalance
       temp_accounts = []
       added_asset_classes = []
       @accounts.each do |account|
-        p account.name
         unbalanced_asset_classes.each do |unbalanced_asset_class|
           # If we can't find this asset class in this account
           # then add it
           if account.find_by_asset_class(unbalanced_asset_class).empty? && !added_asset_classes.include?(unbalanced_asset_class)
             asset_class_funds = funds_by_asset_class
             fund_to_add = asset_class_funds[unbalanced_asset_class].first
-            p "Adding #{fund_to_add.symbol} to #{unbalanced_asset_class} for #{account.name}"
             added_asset_classes << unbalanced_asset_class
             account.fund(fund_to_add.symbol, unbalanced_asset_class, 0, fund_to_add.cost)
           end
@@ -257,7 +244,6 @@ module Rebalance
                   percent_to_change = adjustment_size.quo(a_classes.size-1).to_f * -1
                   a_classes.each do |temp_class_name, temp_percentage|
                     next if temp_class_name == class_name
-                    #p "Minor adjustment to #{temp_class_name} in #{account_name} by #{percent_to_change}"
                     working_account_percentages[account_name][temp_class_name] += percent_to_change
                     working_asset_class_percentages[temp_class_name] += percent_to_change
                   end
