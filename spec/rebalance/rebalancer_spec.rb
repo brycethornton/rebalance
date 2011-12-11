@@ -276,5 +276,9 @@ describe Rebalance::Rebalancer do
       assert_rebalanced @rebalance
       assert_accounts_have_same_values_after_rebalance @rebalance
     end
+
+    it 'should print results in tabular format' do
+      @rebalance.results.must_include "| Wife's Roth        | VBMFX | Total Bond Market         | $11.01 | $0.00         | $8,525.11      |"
+    end
   end
 end

@@ -10,8 +10,8 @@ module Rebalance
       instance_eval &block
     end
 
-    def fund(symbol, asset_class, shares, cost)
-      new_fund = Fund.new(symbol, asset_class, shares, cost)
+    def fund(symbol, asset_class, shares, price=nil)
+      new_fund = Fund.new(symbol, asset_class, shares, price)
       self.funds[new_fund.symbol] = new_fund
     end
 

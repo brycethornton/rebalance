@@ -12,6 +12,11 @@ Gem::Specification.new do |s|
   s.summary     = %q{Target asset allocation rebalancer}
   s.description = %q{Rebalances mutual fund accounts to match your target asset allocation}
 
+  s.add_dependency "ruport"
+  s.add_dependency "json"
+  s.add_development_dependency "vcr"
+  s.add_development_dependency "webmock"
+
   s.rubyforge_project = "rebalance"
 
   s.files         = `git ls-files`.split("\n")

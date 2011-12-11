@@ -1,3 +1,5 @@
+require 'ruport'
+
 module Rebalance
   class Rebalancer
     attr_accessor :accounts,
@@ -82,6 +84,25 @@ module Rebalance
         end
       end
       asset_class_hash
+    end
+
+    # Print a pretty table of our results
+    def results
+      data = Table('Account','Fund','Asset Class', 'Price','Amount To Buy','Amount To Sell')
+
+      @rebalanced_value_difference.each do |account, funds|
+        funds.each do |symbol, val_diff|
+          price = fund_hash[symbol].price
+          asset_class = fund_hash[symbol].asset_class
+          amount_to_buy = 0
+          amount_to_buy = val_diff.abs if val_diff > 0
+          amount_to_sell = 0
+          amount_to_sell = val_diff.abs if val_diff < 0
+          data << [account, symbol, asset_class, format_currency(price), format_currency(amount_to_buy), format_currency(amount_to_sell)]
+        end
+      end
+
+      data.to_text
     end
 
     private
@@ -178,13 +199,22 @@ module Rebalance
             asset_class_funds = funds_by_asset_class
             fund_to_add = asset_class_funds[unbalanced_asset_class].first
             added_asset_classes << unbalanced_asset_class
-            account.fund(fund_to_add.symbol, unbalanced_asset_class, 0, fund_to_add.cost)
+            account.fund(fund_to_add.symbol, unbalanced_asset_class, 0, fund_to_add.price)
           end
         end
         temp_accounts << account
       end
 
       temp_accounts
+    end
+
+    # Helper that simply pulls the funds out of each account into a hash
+    def fund_hash
+      funds = {}
+      @accounts.each do |account|
+        funds.merge!(account.funds)
+      end
+      funds
     end
 
     def rebalance_asset_class_within_account(account, class_name, target_value)
@@ -201,14 +231,14 @@ module Rebalance
       funds.each do |fund|
         amount_difference = (fund.value - per_fund_target_value)
 
-        new_shares = ((fund.value - amount_difference)/fund.cost)
+        new_shares = ((fund.value - amount_difference)/fund.price)
         share_difference = (new_shares - fund.shares).round(2)
 
         symbol = fund.symbol
 
         return_values['rebalanced_shares'][symbol] = new_shares.round(4)
         return_values['rebalanced_share_difference'][symbol] = share_difference
-        return_values['rebalanced_values'][symbol] = (new_shares * fund.cost).round(2)
+        return_values['rebalanced_values'][symbol] = (new_shares * fund.price).round(2)
         return_values['rebalanced_value_difference'][symbol] = (return_values['rebalanced_values'][symbol] - fund.value).round(2)
       end
 
@@ -255,6 +285,16 @@ module Rebalance
       end
 
       working_account_percentages
+    end
+
+    # takes a number and outputs a string in any currency format
+    # adapted from http://codesnippets.joyent.com/posts/show/1812
+    def format_currency(number)
+      # split integer and fractional parts
+      int, frac = ("%.2f" % number).split('.')
+      # insert the delimiters
+      int.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1,")
+      '$' + int + '.' + frac
     end
   end
 end
