@@ -7,11 +7,14 @@ this is investing in passive index funds and sticking to a pre-defined asset all
 Then, it's just a matter of rebalancing every once in a while to make sure the
 allocations are in line with the goal. Sounds pretty simple, right?
 
-Well, it gets slightly more complex you have multiple accounts with multiple funds
+Well, it gets slightly more complex when you have multiple accounts with multiple funds
 in each.  Trying to figure out the best way rebalance across all of these accounts
 can be frustrating and eventually led me to write this gem.  You feed it all of your
 investment information (one account or many) and it will tell you exactly what to
 buy and sell in order to bring your asset allocation back into line.
+
+NOTE: Use common sense when using this!  If you see something that doesn't look correct
+please let me know and/or fix it and submit a pull request.
 
 ## Install ####################################################################
 
