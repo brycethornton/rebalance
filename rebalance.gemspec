@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Bryce Thornton"]
   s.email       = ["brycethornton@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/brycethornton/rebalance"
   s.summary     = %q{Target asset allocation rebalancer}
   s.description = %q{Rebalances mutual fund accounts to match your target asset allocation}
 
