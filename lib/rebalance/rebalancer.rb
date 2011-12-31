@@ -107,6 +107,10 @@ module Rebalance
       data
     end
 
+    def print_results
+      p results
+    end
+
     private
     def single_account_rebalance
       account = @accounts.first

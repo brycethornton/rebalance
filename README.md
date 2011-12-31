@@ -22,7 +22,7 @@ buy and sell in order to bring your asset allocation back into line.
 Here's a basic example of a script using rebalance:
 
     require 'rubygems'
-    require 'reblance'
+    require 'rebalance'
 
     target = Rebalance::Target.new do
       asset_class 35, 'US Total Market'
@@ -52,7 +52,26 @@ Here's a basic example of a script using rebalance:
       fund 'VMMXX', 'Cash', 2500, 1.00
     end
 
-    rebalance = Rebalance::Rebalancer.new(target, wifes_roth, my_roth, my_traditional_ira)
+    accounts_to_rebalance = Rebalance::Rebalancer.new(target, wifes_roth, my_roth, my_traditional_ira)
+    accounts_to_rebalance.rebalance
+    accounts_to_rebalance.print_results
+
+This will output:
+    +--------------------------------------------------------------------------------------------------+
+    |      Account       | Fund  |        Asset Class        | Price  | Amount To Buy | Amount To Sell |
+    +--------------------------------------------------------------------------------------------------+
+    | Wife's Roth        | VIPSX | Inflation-Protected Bonds | $14.36 | $461.05       | $0.00          |
+    | Wife's Roth        | VBMFX | Total Bond Market         | $11.03 | $0.00         | $4,044.40      |
+    | Wife's Roth        | VEURX | Europe                    | $21.46 | $3,583.35     | $0.00          |
+    | My Roth            | VISVX | US Small Cap Value        | $13.96 | $0.00         | $646.31        |
+    | My Roth            | VGSIX | Real Estate               | $17.30 | $1,699.74     | $0.00          |
+    | My Roth            | VTSAX | US Total Market           | $29.02 | $0.00         | $10,880.91     |
+    | My Roth            | VPACX | Pacific                   | $8.96  | $4,962.98     | $0.00          |
+    | My Roth            | VEURX | Europe                    | $21.46 | $2,973.13     | $0.00          |
+    | My Roth            | VBMFX | Total Bond Market         | $11.03 | $1,891.37     | $0.00          |
+    | My Traditional IRA | VTSAX | US Total Market           | $29.02 | $2,500.01     | $0.00          |
+    | My Traditional IRA | VMMXX | Cash                      | $1.00  | $0.00         | $2,500.00      |
+    +--------------------------------------------------------------------------------------------------+
 
 ## License ###################################################################
 
