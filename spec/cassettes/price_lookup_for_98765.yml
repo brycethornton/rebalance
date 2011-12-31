@@ -1,0 +1,40 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://query.yahooapis.com:80/v1/public/yql?env=store://datatables.org/alltableswithkeys&format=json&q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%2298765%22)
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      access-control-allow-origin:
+      - ! '*'
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Sun, 11 Dec 2011 23:18:49 GMT
+      server:
+      - YTS/1.20.7
+      age:
+      - '1'
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+    body: ! '{"query":{"count":1,"created":"2011-12-11T23:18:50Z","lang":"en-US","results":{"quote":{"symbol":"98765","Ask":null,"AverageDailyVolume":"0","Bid":null,"AskRealtime":null,"BidRealtime":null,"BookValue":null,"Change_PercentChange":"N/A
+      - N/A","Change":null,"Commission":null,"ChangeRealtime":"0.00","AfterHoursChangeRealtime":"N/A
+      - N/A","DividendShare":null,"LastTradeDate":null,"TradeDate":null,"EarningsShare":null,"ErrorIndicationreturnedforsymbolchangedinvalid":"No
+      such ticker symbol. <a href=/l>Try Symbol Lookup</a> (Look up: <a href=/l?s=98765>98765</a>)","EPSEstimateCurrentYear":null,"EPSEstimateNextYear":null,"EPSEstimateNextQuarter":null,"DaysLow":null,"DaysHigh":null,"YearLow":null,"YearHigh":null,"HoldingsGainPercent":"-","AnnualizedGain":null,"HoldingsGain":null,"HoldingsGainPercentRealtime":"N/A
+      - N/A","HoldingsGainRealtime":null,"MoreInfo":null,"OrderBookRealtime":null,"MarketCapitalization":null,"MarketCapRealtime":null,"EBITDA":null,"ChangeFromYearLow":null,"PercentChangeFromYearLow":null,"LastTradeRealtimeWithTime":"N/A
+      - <b>0.00</b>","ChangePercentRealtime":"N/A - 0.00%","ChangeFromYearHigh":null,"PercebtChangeFromYearHigh":null,"LastTradeWithTime":"N/A
+      - <b>0.00</b>","LastTradePriceOnly":"0.00","HighLimit":null,"LowLimit":null,"DaysRange":"N/A
+      - N/A","DaysRangeRealtime":"N/A - N/A","FiftydayMovingAverage":null,"TwoHundreddayMovingAverage":null,"ChangeFromTwoHundreddayMovingAverage":null,"PercentChangeFromTwoHundreddayMovingAverage":null,"ChangeFromFiftydayMovingAverage":null,"PercentChangeFromFiftydayMovingAverage":null,"Name":"98765","Notes":null,"Open":null,"PreviousClose":null,"PricePaid":null,"ChangeinPercent":null,"PriceSales":null,"PriceBook":null,"ExDividendDate":null,"PERatio":null,"DividendPayDate":null,"PERatioRealtime":null,"PEGRatio":null,"PriceEPSEstimateCurrentYear":null,"PriceEPSEstimateNextYear":null,"Symbol":"98765","SharesOwned":null,"ShortRatio":null,"LastTradeTime":null,"TickerTrend":null,"OneyrTargetPrice":null,"Volume":null,"HoldingsValue":null,"HoldingsValueRealtime":null,"YearRange":"N/A
+      - N/A","DaysValueChange":"- 0.00%","DaysValueChangeRealtime":"N/A - N/A","StockExchange":null,"DividendYield":null,"PercentChange":"N/A"}}}}'
+    http_version: '1.1'

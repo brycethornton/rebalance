@@ -1,0 +1,41 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://query.yahooapis.com:80/v1/public/yql?env=store://datatables.org/alltableswithkeys&format=json&q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22VMMXX%22)
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      access-control-allow-origin:
+      - ! '*'
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json;charset=utf-8
+      vary:
+      - Accept-Encoding
+      date:
+      - Sat, 31 Dec 2011 21:14:44 GMT
+      server:
+      - YTS/1.20.7
+      age:
+      - '1'
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+    body: ! '{"query":{"count":1,"created":"2011-12-31T21:14:45Z","lang":"en-US","results":{"quote":{"symbol":"VMMXX","Ask":null,"AverageDailyVolume":"0","Bid":null,"AskRealtime":null,"BidRealtime":null,"BookValue":null,"Change_PercentChange":"N/A
+      - N/A","Change":null,"Commission":null,"ChangeRealtime":"0.00","AfterHoursChangeRealtime":"N/A
+      - N/A","DividendShare":null,"LastTradeDate":"12/30/2011","TradeDate":null,"EarningsShare":null,"ErrorIndicationreturnedforsymbolchangedinvalid":null,"EPSEstimateCurrentYear":null,"EPSEstimateNextYear":null,"EPSEstimateNextQuarter":null,"DaysLow":null,"DaysHigh":null,"YearLow":null,"YearHigh":null,"HoldingsGainPercent":"-
+      - -","AnnualizedGain":null,"HoldingsGain":null,"HoldingsGainPercentRealtime":"<i>-</i>
+      - <i>-</i>","HoldingsGainRealtime":"<i>-</i>","MoreInfo":"ned","OrderBookRealtime":null,"MarketCapitalization":null,"MarketCapRealtime":null,"EBITDA":null,"ChangeFromYearLow":null,"PercentChangeFromYearLow":null,"LastTradeRealtimeWithTime":"<i>Dec
+      30</i> - <b><i>0.02%</i></b>","ChangePercentRealtime":"N/A - N/A","ChangeFromYearHigh":null,"PercebtChangeFromYearHigh":null,"LastTradeWithTime":"Dec
+      30 - <b>0.02%</b>","LastTradePriceOnly":"0.02%","HighLimit":null,"LowLimit":null,"DaysRange":"N/A
+      - N/A","DaysRangeRealtime":"N/A - N/A","FiftydayMovingAverage":null,"TwoHundreddayMovingAverage":null,"ChangeFromTwoHundreddayMovingAverage":null,"PercentChangeFromTwoHundreddayMovingAverage":null,"ChangeFromFiftydayMovingAverage":null,"PercentChangeFromFiftydayMovingAverage":null,"Name":"VANGUARD
+      MONEY MA","Notes":null,"Open":null,"PreviousClose":null,"PricePaid":null,"ChangeinPercent":null,"PriceSales":null,"PriceBook":null,"ExDividendDate":null,"PERatio":null,"DividendPayDate":null,"PERatioRealtime":null,"PEGRatio":null,"PriceEPSEstimateCurrentYear":null,"PriceEPSEstimateNextYear":null,"Symbol":"VMMXX","SharesOwned":null,"ShortRatio":null,"LastTradeTime":"6:24pm","TickerTrend":null,"OneyrTargetPrice":null,"Volume":null,"HoldingsValue":null,"HoldingsValueRealtime":"<i>-</i>","YearRange":"N/A
+      - N/A","DaysValueChange":"- - 0.00%","DaysValueChangeRealtime":"<i>-</i> - <i>-</i>","StockExchange":"NasdaqSC","DividendYield":null,"PercentChange":"N/A"}}}}'
+    http_version: '1.1'
