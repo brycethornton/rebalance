@@ -57,6 +57,7 @@ Here's a basic example of a script using rebalance:
     accounts_to_rebalance.print_results
 
 This will output:
+
     +--------------------------------------------------------------------------------------------------+
     |      Account       | Fund  |        Asset Class        | Price  | Amount To Buy | Amount To Sell |
     +--------------------------------------------------------------------------------------------------+
