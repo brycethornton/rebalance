@@ -98,11 +98,13 @@ module Rebalance
           amount_to_buy = val_diff.abs if val_diff > 0
           amount_to_sell = 0
           amount_to_sell = val_diff.abs if val_diff < 0
-          data << [account, symbol, asset_class, format_currency(price), format_currency(amount_to_buy), format_currency(amount_to_sell)]
+
+          data_array = [account, symbol, asset_class, format_currency(price), format_currency(amount_to_buy), format_currency(amount_to_sell)]
+          data << data_array
         end
       end
 
-      data.to_text
+      data
     end
 
     private

@@ -278,7 +278,8 @@ describe Rebalance::Rebalancer do
     end
 
     it 'should print results in tabular format' do
-      @rebalance.results.must_include "| Wife's Roth        | VBMFX | Total Bond Market         | $11.01 | $0.00         | $8,525.11      |"
+      results = @rebalance.results.to_s
+      results.must_include "| Wife's Roth        | VBMFX | Total Bond Market         | $11.01 | $0.00         | $8,525.11      |"
     end
   end
 end
