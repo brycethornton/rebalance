@@ -81,7 +81,7 @@ This will output:
 
 (The MIT License)
 
-Copyright (c) 2011 Bryce Thornton
+Copyright (c) 2012 Bryce Thornton
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
