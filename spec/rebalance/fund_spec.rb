@@ -9,7 +9,7 @@ describe Rebalance::Fund do
   it "will look up the price if none is specified" do
     VCR.use_cassette('price_lookup_for_VISVX', :record => :new_episodes) do
       fund = Rebalance::Fund.new('VISVX', 'US Small Cap Value', 20)
-      fund.price.must_equal 15.30
+      fund.price.must_equal 16.32
     end
   end
 
