@@ -16,7 +16,7 @@ module Rebalance
 
       target_values = {}
       asset_classes.each do |asset_class, percentage|
-        target_values[asset_class] = (total_value * (percentage.to_f/100)).round(2)
+        target_values[asset_class] = (total_value * (percentage.to_f/100))
       end
       target_values
     end
@@ -27,7 +27,7 @@ module Rebalance
       total_value = total_value_of_all_accounts(*accounts)
 
       target_values.each do |asset_class, asset_class_value|
-        target_percentages[asset_class] = ((asset_class_value / total_value)*100).round(4)
+        target_percentages[asset_class] = ((asset_class_value / total_value)*100)
       end
       target_percentages
     end
@@ -49,7 +49,7 @@ module Rebalance
       total_value = total_value_of_all_accounts(*accounts)
 
       current_values.each do |asset_class, asset_class_value|
-        current_percentages[asset_class] = ((asset_class_value / total_value)*100).round(4)
+        current_percentages[asset_class] = ((asset_class_value / total_value)*100)
       end
       current_percentages
     end
@@ -75,7 +75,7 @@ module Rebalance
             asset_class_total += asset_class_fund.value
           end
           account_percentages[account.name] = {} if account_percentages[account.name].nil?
-          account_percentages[account.name][fund.asset_class] = ((asset_class_total / total_value_of_all_accounts) * 100).round(4)
+          account_percentages[account.name][fund.asset_class] = ((asset_class_total / total_value_of_all_accounts) * 100)
         end
       end
       account_percentages

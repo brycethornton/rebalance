@@ -238,14 +238,14 @@ module Rebalance
         amount_difference = (fund.value - per_fund_target_value)
 
         new_shares = ((fund.value - amount_difference)/fund.price)
-        share_difference = (new_shares - fund.shares).round(2)
+        share_difference = (new_shares - fund.shares)
 
         symbol = fund.symbol
 
-        return_values['rebalanced_shares'][symbol] = new_shares.round(4)
+        return_values['rebalanced_shares'][symbol] = new_shares
         return_values['rebalanced_share_difference'][symbol] = share_difference
-        return_values['rebalanced_values'][symbol] = (new_shares * fund.price).round(2)
-        return_values['rebalanced_value_difference'][symbol] = (return_values['rebalanced_values'][symbol] - fund.value).round(2)
+        return_values['rebalanced_values'][symbol] = (new_shares * fund.price)
+        return_values['rebalanced_value_difference'][symbol] = (return_values['rebalanced_values'][symbol] - fund.value)
       end
 
       return_values

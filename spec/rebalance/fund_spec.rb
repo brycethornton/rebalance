@@ -3,7 +3,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe Rebalance::Fund do
   it "knows it's total value" do
     fund = Rebalance::Fund.new('ABC', 'Bonds', 20, 4.51)
-    fund.value.must_equal 90.20
+    fund.value.must_equal 90.19999999999999
   end
 
   it "will look up the price if none is specified" do

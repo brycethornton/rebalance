@@ -33,7 +33,7 @@ describe Rebalance::Target do
 
       expected_target_values = {
         'Some Asset Class' => 10964.55,
-        'Another Asset Class' => 7309.70,
+        'Another Asset Class' => 7309.700000000001,
         'Bonds' => 18274.25
       }
 
@@ -107,10 +107,10 @@ describe Rebalance::Target do
       current_values = @target.calculate_current_asset_class_percentages(@wifes_roth, @my_roth, @my_sep_ira)
 
       expected_current_values = {
-        'Some Asset Class' => 34.2316,
-        'Another Asset Class' => 50.5720,
-        'Bonds' => 14.8592,
-        'Cash' => 0.3371
+        'Some Asset Class' => 34.23164235463352,
+        'Another Asset Class' => 50.57202580297139,
+        'Bonds' => 14.859185003708616,
+        'Cash' => 0.33714683868647594
       }
 
       current_values.must_equal expected_current_values
@@ -119,16 +119,16 @@ describe Rebalance::Target do
     it 'calculates the asset class percentages across all accounts' do
       expected_percentages = {
         "Wife's Roth" => {
-        "Some Asset Class" => 28.0956,
-        "Another Asset Class" => 50.5720,
-        "Bonds" => 3.4805
+        "Some Asset Class" => 28.09556989053966,
+        "Another Asset Class" => 50.57202580297139,
+        "Bonds" => 3.480479198040053
       },
         "My Roth" => {
-        "Cash" => 0.3371,
-        "Some Asset Class" => 6.1361
+        "Cash" => 0.33714683868647594,
+        "Some Asset Class" => 6.136072464093862
       },
         "My SEP IRA" => {
-        "Bonds" => 11.3787
+        "Bonds" => 11.378705805668563
       }
       }
 

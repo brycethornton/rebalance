@@ -39,7 +39,7 @@ module Rebalance
     end
 
     def value
-      (price * shares).round(2)
+      (price * shares)
     end
   end
 end

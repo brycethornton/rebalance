@@ -26,7 +26,7 @@ module Rebalance
     def calculate_percentages
       percentages = {}
       funds.each do |symbol, fund|
-        percentages[fund.symbol] = (fund.value / total_value * 100).round(2)
+        percentages[fund.symbol] = (fund.value / total_value * 100)
       end
       percentages
     end

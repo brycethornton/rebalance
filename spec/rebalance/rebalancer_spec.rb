@@ -35,9 +35,9 @@ describe Rebalance::Rebalancer do
       expected_rebalance = {
         'ABCDE' => 548.2275,
         'FGHIJ' => 219.291,
-        'KLMNO' => 24.3657,
-        'PQRST' => 285.5352,
-        'UVWXY' => 1661.2955
+        'KLMNO' => 24.36566666666667,
+        'PQRST' => 285.53515625,
+        'UVWXY' => 1661.2954545454545
       }
 
       @rebalance.rebalanced_shares.must_equal expected_rebalance
@@ -45,11 +45,11 @@ describe Rebalance::Rebalancer do
 
     it 'provides the difference in shares for each fund' do
       expected_difference = {
-        'ABCDE' => 48.23,
-        'FGHIJ' => -80.71,
-        'KLMNO' => -50.63,
-        'PQRST' => 250.04,
-        'UVWXY' => 1586.30
+        'ABCDE' => 48.227499999999964,
+        'FGHIJ' => -80.709,
+        'KLMNO' => -50.63433333333333,
+        'PQRST' => 250.03515625,
+        'UVWXY' => 1586.2954545454545
       }
 
       @rebalance.rebalanced_share_difference.must_equal expected_difference
@@ -57,11 +57,11 @@ describe Rebalance::Rebalancer do
 
     it 'provides the new value for each fund' do
       expected_rebalance = {
-        'ABCDE' => 5482.28,
-        'FGHIJ' => 5482.28,
-        'KLMNO' => 7309.70,
-        'PQRST' => 9137.13,
-        'UVWXY' => 9137.13
+        'ABCDE' => 5482.275,
+        'FGHIJ' => 5482.275,
+        'KLMNO' => 7309.700000000001,
+        'PQRST' => 9137.125,
+        'UVWXY' => 9137.125
       }
 
       @rebalance.rebalanced_values.must_equal expected_rebalance
@@ -69,18 +69,18 @@ describe Rebalance::Rebalancer do
 
     it 'provides the difference in value for each fund' do
       expected_difference = {
-        'ABCDE' => 482.28,
-        'FGHIJ' => -2017.72,
-        'KLMNO' => -15190.30,
-        'PQRST' => 8001.13,
-        'UVWXY' => 8724.63
+        'ABCDE' => 482.27499999999964,
+        'FGHIJ' => -2017.7250000000004,
+        'KLMNO' => -15190.3,
+        'PQRST' => 8001.125,
+        'UVWXY' => 8724.625
       }
 
       @rebalance.rebalanced_value_difference.must_equal expected_difference
 
       total_value = 0
       @rebalance.rebalanced_value_difference.values.each { |value| total_value += value }
-      total_value.round(2).must_equal 0.02
+      total_value.round(2).must_equal 0.00
     end
 
     it 'should be rebalanced' do
@@ -122,19 +122,19 @@ describe Rebalance::Rebalancer do
     it 'provides the new number of shares for each fund' do
       expected_rebalance = {
         "Wife's Roth" => {
-        'ABCDE' => 525.2515,
-        'FGHIJ' => 210.1006,
-        'KLMNO' => 29.5349,
-        'PQRST' => 268.4844,
-        'UVWXY' => 1562.0911
+        'ABCDE' => 525.2508906250002,
+        'FGHIJ' => 210.1003562500001,
+        'KLMNO' => 29.534940625000004,
+        'PQRST' => 268.484375,
+        'UVWXY' => 1562.090909090909
       },
         "My Roth" => {
         'AAAAA' => 0.0,
-        'BBBBB' => 62.60850,
-        'FGHIJ' => 57.59980
+        'BBBBB' => 62.608695652173914,
+        'FGHIJ' => 57.6
       },
         "My SEP IRA" => {
-        'ZZZZZ' => 249.9999
+        'ZZZZZ' => 250.00000000000006
       }
       }
 
@@ -144,19 +144,19 @@ describe Rebalance::Rebalancer do
     it 'provides the share difference for each fund' do
       expected_rebalance = {
         "Wife's Roth" => {
-        'ABCDE' => 25.25,
-        'FGHIJ' => -89.9,
-        'KLMNO' => -45.47,
-        'PQRST' => 232.98,
-        'UVWXY' => 1487.09
+        'ABCDE' => 25.25089062500024,
+        'FGHIJ' => -89.89964374999991,
+        'KLMNO' => -45.465059374999996,
+        'PQRST' => 232.984375,
+        'UVWXY' => 1487.090909090909
       },
         "My Roth" => {
         'AAAAA' => -150.0,
-        'BBBBB' => 52.61,
+        'BBBBB' => 52.608695652173914,
         'FGHIJ' => -42.4
       },
         "My SEP IRA" => {
-        'ZZZZZ' => 0.0
+        'ZZZZZ' => 0.00000000000005684341886080802
       }
       }
 
@@ -166,19 +166,19 @@ describe Rebalance::Rebalancer do
     it 'provides the rebalanced values for each fund' do
       expected_rebalance = {
         "Wife's Roth" => {
-        'ABCDE' => 5252.52,
-        'FGHIJ' => 5252.52,
-        'KLMNO' => 8860.48,
-        'PQRST' => 8591.50,
-        'UVWXY' => 8591.50
+        'ABCDE' => 5252.508906250003,
+        'FGHIJ' => 5252.508906250002,
+        'KLMNO' => 8860.482187500002,
+        'PQRST' => 8591.5,
+        'UVWXY' => 8591.5
       },
         "My Roth" => {
-        'AAAAA' => 0,
-        'BBBBB' => 1440.00,
-        'FGHIJ' => 1440.00
+        'AAAAA' => 0.0,
+        'BBBBB' => 1440.0,
+        'FGHIJ' => 1440.0
       },
         "My SEP IRA" => {
-        'ZZZZZ' => 5062.50
+        'ZZZZZ' => 5062.500000000001
       }
       }
 
@@ -188,19 +188,19 @@ describe Rebalance::Rebalancer do
     it 'provides the rebalanced value difference for each fund' do
       expected_rebalance = {
         "Wife's Roth" => {
-        'ABCDE' => 252.52,
-        'FGHIJ' => -2247.48,
-        'KLMNO' => -13639.52,
-        'PQRST' => 7455.50,
-        'UVWXY' => 8179.00
+        'ABCDE' => 252.50890625000284,
+        'FGHIJ' => -2247.491093749998,
+        'KLMNO' => -13639.517812499998,
+        'PQRST' => 7455.5,
+        'UVWXY' => 8179.0
       },
         "My Roth" => {
-        'AAAAA' => -150.00,
-        'BBBBB' => 1210.00,
-        'FGHIJ' => -1060.00
+        'AAAAA' => -150.0,
+        'BBBBB' => 1210.0,
+        'FGHIJ' => -1060.0
       },
         "My SEP IRA" => {
-        'ZZZZZ' => 0.00
+        'ZZZZZ' => 0.0000000000009094947017729282
       }
       }
 
@@ -279,7 +279,7 @@ describe Rebalance::Rebalancer do
 
     it 'should print results in tabular format' do
       results = @rebalance.results.to_s
-      results.must_include "| Wife's Roth        | VBMFX | Total Bond Market         | $11.01 | $0.00         | $8,525.11      |"
+      results.must_include "| Wife's Roth        | VBMFX | Total Bond Market         | $11.01 | $0.00         | $8,525.09      |"
     end
   end
 end

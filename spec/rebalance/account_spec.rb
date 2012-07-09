@@ -27,7 +27,7 @@ describe Rebalance::Account do
 
   it "knows the percentage of each fund" do
     percentages = @account.calculate_percentages
-    percentages['ABCDE'].must_equal 12.05
+    percentages['ABCDE'].must_equal 12.051822838204277
   end
 
   it "finds funds by asset class" do
